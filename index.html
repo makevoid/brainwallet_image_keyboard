@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <section>
+      <h1>
+        Brainwallet
+        <span>
+          -
+          <a href="#" onclick="javascript:void(0)">Generate</a>
+          /
+          <a href="#" onclick="javascript:void(0)">Restore</a>
+        </span>
+      </h1>
+      <div id="key"></div>
+      <input id="input" type="text">
+      <div id="brainwallet-words">
+        <!--- elements will be inserted here -->
+      </div>
+    </section>
+
+
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" ></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.string.js/1.8.3/underscore-min.js" ></script>
+
+
+    <script  type="text/javascript" >
+      "use strict";
+      // si inizia...
+
+      const get = (url) => {
+        return new Promise((resolve, reject) => {
+          // var xhrLoad = () => {
+          //   resolve(this.responseText)
+          // }
+          var xhrLoad = function() {
+            resolve(JSON.parse(this.responseText))
+          }
+          let oReq = new XMLHttpRequest()
+          oReq.addEventListener("load", xhrLoad)
+          oReq.open("GET", url)
+          oReq.send()
+        })
+      }
+
+      const loadWords = () => {
+        return get("/words/english.json")
+      }
+
+      const renderWords = (element, words) => {
+        // words = _(words).first(500)
+        let images = ""
+        _(words).each((word) => {
+          //console.log(word)
+          let imageUrl = `/images/english/${word}.jpg`
+          // element.innerHTML = `
+          // ${element.innerHTML}
+          // <div class="word">
+          //   <div class="img" style="background: url(${imageUrl}) no-repeat center center; background-size: cover">&nbsp;</div>
+          //   <h3 class="text">${word}</h3>
+          // </div>`
+          images = `
+          ${images}
+          <div class="word">
+            <img class="img" src="${imageUrl}">
+            <h3 class="text">${word}</h3>
+          </div>`
+        })
+        element.innerHTML = images
+      }
+
+      (setTimeout(function(){
+
+        const c = console
+
+        const linkClick = function(evt) {
+          console.log(`link clicked, target (current):${evt.currenttarget},  target (simple):${evt.target}, antani: "sblinda"`)
+          return "comeseffosseAntaniSdrimbellatiLiNClickLinkedClickedEventDone(alla listener)"
+        }
+
+        let d = document
+
+        const links = d.querySelectorAll("a")
+        _(links).map(function(link){
+          console.log(link)
+          link.addEventListener("click", linkClick)
+        })
+
+        const element = d.querySelector("#brainwallet-words")
+
+        loadWords()
+          .then((words) => {
+            renderWords(element, words)
+          })
+          .catch((err) => {
+            c.error(err)
+          })
+
+
+        const onKey = (evt) => {
+          let input = d.querySelector("#input")
+          c.log(input.value)
+        }
+
+        d.querySelector("#input")
+        d.addEventListener("keyup", onKey)
+
+      }, 0))
+
+    </script>
+
+    <style>
+
+      /* reset */
+      html, body { font-size: 140%; padding:0; margin: 0; }
+      a { text-decoration: none; }
+      nav { display: inline-block; }
+      section { margin: 0; padding: 20px 2%; }
+      * { box-sizing: border-box }
+
+      /* colors */
+      html, body { height: 100% }
+      a { color: #E00; }
+
+      /* style: header */
+      h1 { line-height: 90px; margin: 0; }
+      h1 > span { font-size: 70%; }
+
+      /* style: main: form */
+      .word { display: inline-block }
+      .word > .text { text-align: center }
+      /*.word >*/
+      /*.word > .img { width: 100% }*/
+      .word > .img { background-size: contain; }
+      /*.word { width: 19%; }*/
+      /*.word > .img { height: 120px; width: 100%; }*/
+      .word > .img { height: 150px; width: 150px; }
+      .word > .text { line-height: 70px; margin: 0 0 20px 0; padding: 0 display:  block}
+
+      /* style: main: colors */
+      /* TODO: Webkit filters */
+
+      /* style: interactivity */
+      .word { cursor: pointer }
+      .word > .text { color: #555 }
+      .word:hover .text { color: #000 }
+      .word:hover .img { opacity: 0.8 }
+
+      /*background:  no-repeat center center;*/
+
+      /* button */
+      .button, .btn { background: #GGG }
+
+
+
+      /* style: forms */
+      input { font-size: 140%; padding: 8px 12px; width: 100%; }
+      input { margin-bottom: 20px; }
+    </style>
+
+  </body>
+</html>
