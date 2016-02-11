@@ -19,9 +19,9 @@ connect:
 
     cd node_modules/bitcore-mnemonic && gulp browser
 
-If it fails:
+If it fails, from the same dir, execute:
 
-    npm i --save-dev browserify bitcore-build
+    npm i --save-dev gulp browserify bitcore-build
     gulp browser
 
 To check, `ls | grep bitcore-mnemonic.min.js` should return 2 files, one of which is `bitcore-mnemonic.min.js`.
