@@ -9,6 +9,23 @@ connect:
 <http://localhost:3000>
 
 
+### Install
+
+    npm i -g bower gulp browserify
+
+
+    bower install
+    npm install
+
+    cd node_modules && gulp browser
+
+If it fails:
+
+    npm i --save-dev browserify bitcore-build
+    gulp browser
+
+To check, `ls | grep bitcore-mnemonic.min.js` should return 2 files, one of which is `bitcore-mnemonic.min.js`.
+
 ### Infos
 
 

@@ -8,13 +8,18 @@
     <section>
       <h1>
         Brainwallet
-        <span>
-          -
-          <a href="#" onclick="javascript:void(0)">Generate</a>
+        -
+        <span class="buttons">
+          <a data-fn="generate" href="#" onclick="javascript:void(0)">Generate</a>
           /
-          <a href="#" onclick="javascript:void(0)">Restore</a>
+          <a data-fn="save" href="#" onclick="javascript:void(0)">Save</a>
+          /
+          <a data-fn="load" href="#" onclick="javascript:void(0)">Load</a>
+          /
+          <a data-fn="training" href="#" onclick="javascript:void(0)">Training</a>
         </span>
       </h1>
+      <div id="keyWIF"></div>
       <div id="key"></div>
       <input id="input" type="text">
       <div id="brainwallet-words">
@@ -23,14 +28,22 @@
     </section>
 
 
-
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" ></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.string.js/1.8.3/underscore-min.js" ></script>
+    <script type="text/javascript" src="/bower_components/underscore/underscore-min.js" ></script>
+    <script type="text/javascript" src="/bower_components/underscore.string/dist/underscore.string.js" ></script>
+    <!-- <script type="text/javascript" src="./node.js" ></script> -->
+    <script type="text/javascript" src="/bower_components/bitcore-lib/bitcore-lib.min.js" ></script>
+    <script type="text/javascript" src="/bower_components/bitcore-mnemonic/bitcore-mnemonic.min.js" ></script>
 
 
     <script  type="text/javascript" >
       "use strict";
-      // si inizia...
+
+      const d = document
+
+      const bitcore  = require('bitcore-lib')
+      const Mnemonic = require('bitcore-mnemonic')
+
+      const ALL_WORDS = Mnemonic.Words.ENGLISH
 
       const get = (url) => {
         return new Promise((resolve, reject) => {
@@ -48,46 +61,83 @@
       }
 
       const loadWords = () => {
-        return get("/words/english.json")
+        // return get("/words/english.json")
+        return new Promise((resolve, reject) =>
+          resolve(ALL_WORDS)
+        )
+      }
+
+      const wordTag = (imageUrl, word) => {
+        return `<div class="word" data-word="${word}">
+          <img class="img" src="${imageUrl}">
+          <h3 class="text">${word}</h3>
+        </div>`
+      }
+
+      const genImagesHtml = (words) => {
+        let images = ""
+        _(words).each((word) => {
+          let imageUrl = `/images/english/${word}.jpg`
+          images = `
+          ${images}
+          ${wordTag(imageUrl, word)}`
+        })
+        return images
       }
 
       const renderWords = (element, words) => {
         // words = _(words).first(500)
-        let images = ""
-        _(words).each((word) => {
-          //console.log(word)
-          let imageUrl = `/images/english/${word}.jpg`
-          // element.innerHTML = `
-          // ${element.innerHTML}
-          // <div class="word">
-          //   <div class="img" style="background: url(${imageUrl}) no-repeat center center; background-size: cover">&nbsp;</div>
-          //   <h3 class="text">${word}</h3>
-          // </div>`
-          images = `
-          ${images}
-          <div class="word">
-            <img class="img" src="${imageUrl}">
-            <h3 class="text">${word}</h3>
-          </div>`
-        })
-        element.innerHTML = images
+        let imagesHTML = genImagesHtml(words)
+        element.innerHTML = imagesHTML
       }
 
+      const generateWords = () => {
+        let code = new Mnemonic(ALL_WORDS);
+        let codeStr = code.toString()
+        return codeStr
+      }
+
+      const showWords = (words) => {
+        let key = d.querySelector("#key")
+        renderWords(key, words)
+      }
+
+      // main
       (setTimeout(function(){
-
         const c = console
+        const store = localStorage
 
-        const linkClick = function(evt) {
-          console.log(`link clicked, target (current):${evt.currenttarget},  target (simple):${evt.target}, antani: "sblinda"`)
-          return "comeseffosseAntaniSdrimbellatiLiNClickLinkedClickedEventDone(alla listener)"
+        let KEY = generateWords()
+
+        this.generate = (x) => {
+          let words = generateWords()
+          words = words.split(" ")
+          showWords(words)
         }
 
-        let d = document
+        this.save = (x) => {
+          store.privateKeyMnemonic = KEY
+        }
+
+        this.load = (x) => {
+          KEY = store.privateKeyMnemonic
+          let words = KEY.split(" ")
+          showWords(words)
+        }
+
+        this.training = (x) => {
+          c.log("TODO")
+        }
+
+        const linkClick = (evt) => {
+          let fn = evt.target.dataset.fn.toString()
+          c.log(`executing: ${fn}()`)
+          this[fn]()
+        }
 
         const links = d.querySelectorAll("a")
         _(links).map(function(link){
-          console.log(link)
-          link.addEventListener("click", linkClick)
+          link.addEventListener("click", linkClick, false)
         })
 
         const element = d.querySelector("#brainwallet-words")
@@ -95,19 +145,83 @@
         loadWords()
           .then((words) => {
             renderWords(element, words)
+            let event = new Event('words-loaded')
+            window.dispatchEvent(event)
           })
           .catch((err) => {
             c.error(err)
           })
-
 
         const onKey = (evt) => {
           let input = d.querySelector("#input")
           c.log(input.value)
         }
 
-        d.querySelector("#input")
-        d.addEventListener("keyup", onKey)
+        const getPrivateKey = (words) => {
+          let code = new Mnemonic(words.join(" "))
+          return code.toHDPrivateKey()
+        }
+
+        const showPrivateKey = (words) => {
+          let key = getPrivateKey(words)
+          let elem = d.querySelector("#keyWIF")
+          let keyString = key.privateKey.toWIF()
+          let message = `PrivateKey:<br>${keyString}`
+          elem.innerHTML = message
+        }
+
+        // TODO: training
+        // d.querySelector("#input")
+        // d.addEventListener("keyup", onKey)
+
+        //
+
+        const WORDS = []
+
+        const wordAddDo = (word) => {
+          if (WORDS.length < 12)
+            WORDS.push(word)
+
+          if (WORDS.length > 11)
+            showPrivateKey(WORDS)
+
+          showWords(WORDS)
+        }
+
+        const wordClick = (evt) => {
+          let elem = evt.currentTarget
+          let word = elem.dataset.word
+
+          wordAddDo(word)
+        }
+
+        const wordsAddClickListener = () => {
+          const wordElems = d.querySelectorAll("#brainwallet-words .word")
+          _(wordElems).map(function(wordElem){
+            wordElem.addEventListener("click", wordClick, false)
+          })
+        }
+
+        window.addEventListener("words-loaded", wordsAddClickListener, false)
+
+        const addWordToInput = (word, elem) => {
+          if (_(ALL_WORDS).include(word)) {
+            wordAddDo(word)
+            elem.value = ""
+          }
+        }
+
+        const wordsAddOnEnter = (evt) => {
+          let enterPressed = evt.keyCode == 13
+          if (enterPressed) {
+            let elem = evt.target
+            let word = elem.value
+            addWordToInput(word, elem)
+          }
+        }
+
+        let input = d.querySelector("#input")
+        input.addEventListener("keydown", wordsAddOnEnter)
 
       }, 0))
 
@@ -145,7 +259,7 @@
       /* TODO: Webkit filters */
 
       /* style: interactivity */
-      .word { cursor: pointer }
+      #brainwallet-words .word { cursor: pointer }
       .word > .text { color: #555 }
       .word:hover .text { color: #000 }
       .word:hover .img { opacity: 0.8 }
@@ -153,13 +267,15 @@
       /*background:  no-repeat center center;*/
 
       /* button */
-      .button, .btn { background: #GGG }
-
+      .button, .btn, .buttons a { background: #C00; border: 1px solid #C00; color: #FFF; border-radius: 10px; padding: 3px 7px; }
+      .button:hover, .btn:hover, .buttons a:hover {  background: #FFF; color: #C00; }
 
 
       /* style: forms */
       input { font-size: 140%; padding: 8px 12px; width: 100%; }
       input { margin-bottom: 20px; }
+
+      #keyWIF { font-weight: bold; font-size: 30px; font-size: 48px; margin-bottom: 20px; text-align: center}
     </style>
 
   </body>

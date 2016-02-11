@@ -2,6 +2,7 @@
   "name": "brainwallet_visualizer",
   "dependencies": {
     "bitcore-mnemonic": "~1.0.1",
-    "underscore.string": "~3.2.3"
+    "underscore.string": "~3.2.3",
+    "underscore": "^1.8.3"
   }
 }
