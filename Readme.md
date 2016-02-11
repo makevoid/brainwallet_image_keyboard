@@ -29,7 +29,7 @@ To check, `ls | grep bitcore-mnemonic.min.js` should return 2 files, one of whic
 ### Infos
 
 
-This is a repo that contains just a private key keyboard, the keyboard in ascii is:
+This is a repo that contains just a private key, image based tool, not a keyboard:
 
 
         ---------------------------------------------------------------------
@@ -48,6 +48,9 @@ This is a repo that contains just a private key keyboard, the keyboard in ascii 
 
         ---------------------------------------------------------------------
 
+
+
+hmmm.... no :D
 
 
 ### LICENSE
