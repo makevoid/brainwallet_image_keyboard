@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/makevoid/brainwallet_image_keyboard/issues"
   },
-  "homepage": "https://github.com/makevoid/brainwallet_image_keyboard#readme"
+  "homepage": "https://github.com/makevoid/brainwallet_image_keyboard#readme",
+  "dependencies": {
+    "bitcore-mnemonic": "^1.0.1"
+  }
 }
