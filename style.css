@@ -1,0 +1,47 @@
+/* reset */
+html, body { font-size: 140%; padding:0; margin: 0; }
+a { text-decoration: none; }
+nav { display: inline-block; }
+section { margin: 0; padding: 20px 2%; }
+* { box-sizing: border-box }
+
+/* colors */
+html, body { height: 100% }
+a { color: #E00; }
+
+/* style: header */
+h1 { line-height: 90px; margin: 0; }
+h1 > span { font-size: 70%; }
+
+/* style: main: form */
+.word { display: inline-block }
+.word > .text { text-align: center }
+/*.word >*/
+/*.word > .img { width: 100% }*/
+.word > .img { background-size: contain; }
+/*.word { width: 19%; }*/
+/*.word > .img { height: 120px; width: 100%; }*/
+.word > .img { height: 150px; width: 150px; }
+.word > .text { line-height: 70px; margin: 0 0 20px 0; padding: 0 display:  block}
+
+/* style: main: colors */
+/* TODO: Webkit filters */
+
+/* style: interactivity */
+#brainwallet-words .word { cursor: pointer }
+.word > .text { color: #555 }
+.word:hover .text { color: #000 }
+.word:hover .img { opacity: 0.8 }
+
+/*background:  no-repeat center center;*/
+
+/* button */
+.button, .btn, .buttons a { background: #C00; border: 1px solid #C00; color: #FFF; border-radius: 10px; padding: 3px 7px; }
+.button:hover, .btn:hover, .buttons a:hover {  background: #FFF; color: #C00; }
+
+
+/* style: forms */
+input { font-size: 140%; padding: 8px 12px; width: 100%; }
+input { margin-bottom: 20px; }
+
+#keyWIF { font-weight: bold; font-size: 30px; font-size: 48px; margin-bottom: 20px; text-align: center}
