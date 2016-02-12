@@ -20,9 +20,23 @@
           <a data-fn="training" href="#" onclick="javascript:void(0)">Training</a>
         </span>
       </h1>
+      <div id="counter"><span id="count">0</span> / 12<br>words</div>
+      <div id="status"></div>
       <div id="keyWIF"></div>
       <div id="key"></div>
       <input id="input" type="text">
+      <div class="buttons color-select">
+        <a style="background-color: blue" data-fn="changeColor" data-arg="blue">Blue</a>
+        <a style="background-color: orange" data-fn="changeColor" data-arg="orange">Orange</a>
+        <a style="background-color: green" data-fn="changeColor" data-arg="green">Green</a>
+        <a style="background-color: pink" data-fn="changeColor" data-arg="pink">Pink</a>
+        <a style="background-color: purple" data-fn="changeColor" data-arg="purple">Purple</a>
+        <a style="background-color: brown" data-fn="changeColor" data-arg="brown">Brown</a>
+        <a style="background-color: yellow" data-fn="changeColor" data-arg="yellow">Yellow</a>
+        <a style="background-color: red" data-fn="changeColor" data-arg="red">Red</a>
+        <a style="background-color: black" data-fn="changeColor" data-arg="black">Black</a>
+      </a>
+      <div class="s20"></div>
       <div id="brainwallet-words">
         <!--- elements will be inserted here -->
       </div>
@@ -38,5 +52,106 @@
     <script type="text/javascript" src="/bower_components/bitcore-lib/bitcore-lib.min.js" ></script>
     <script type="text/javascript" src="/bower_components/bitcore-mnemonic/bitcore-mnemonic.min.js" ></script>
     <script type="text/javascript" src="/app.js"></script>
+    <svg class="defs-only">
+      <!--
+      R2 = Nrr*R1 + Ngr*G1 + Nbr*B1 + Nar*A1 + Cr*1
+      G2 = Nrg*R1 + Ngg*G1 + Nbg*B1 + Nag*A1 + Cg*1
+      B2 = Nrb*R1 + Ngb*G1 + Nbb*B1 + Nab*A1 + Cb*1
+      A2 = Nra*R1 + Nga*G1 + Nba*B1 + Naa*A1 + Ca*1
+      1 =  0*R1 +  0*G1 +  0*B1 +  0*A1 + 1*1
+      -->
+      <filter id="blue">
+        <feColorMatrix type="matrix"
+           values="
+             1 0 0 0 0.03
+             1 0 0 0 0.2
+             1 0 0 0 0.5
+             0    0 0 1 0
+               "/>
+      </filter>
+      <filter id="orange">
+        <feColorMatrix type="matrix"
+           values="
+             1 0 0 0 0.7
+             1 0 0 0 0.2
+             1 0 0 0 0.03
+             0    0 0 1 0
+               "/>
+      </filter>
+      <filter id="green">
+        <feColorMatrix type="matrix"
+           values="
+             1 0 0 0 0.03
+             1 0 0 0 0.5
+             1 0 0 0 0.2
+             0    0 0 1 0
+               "/>
+      </filter>
+      <filter id="pink">
+        <feColorMatrix type="matrix"
+           values="
+             1 0 0 0 0.5
+             1 0 0 0 0.03
+             1 0 0 0 0.2
+             0    0 0 1 0
+               "/>
+      </filter>
+      <filter id="purple">
+        <feColorMatrix type="matrix"
+           values="
+             1 0 0 0 0.2
+             1 0 0 0 0.03
+             1 0 0 0 0.5
+             0    0 0 1 0
+               "/>
+      </filter>
+      <filter id="brown">
+        <feColorMatrix type="matrix"
+           values="
+             1 0 0 0 0.3
+             1 0 0 0 0.1
+             1 0 0 0 0
+             0    0 0 1 0
+               "/>
+      </filter>
+      <filter id="yellow">
+        <feColorMatrix type="matrix"
+           values="
+             1 0 0 0 0.7
+             1 0 0 0 0.7
+             1 0 0 0 0
+             0    0 0 1 0
+               "/>
+      </filter>
+      <filter id="red">
+        <feColorMatrix type="matrix"
+           values="
+             1 0 0 0 0.8
+             1 0 0 0 0.02
+             1 0 0 0 0.02
+             0    0 0 1 0
+               "/>
+      </filter>
+      <filter id="black">
+        <feColorMatrix type="matrix"
+           values="
+             1 0 0 0 0.1
+             1 0 0 0 0.1
+             1 0 0 0 0.1
+             0    0 0 1 0
+               "/>
+      </filter>
+  </svg>
+    <style media="screen">
+      .col1 { -webkit-filter: url(#blue);   filter: url(#blue); }
+      .col2 { -webkit-filter: url(#orange); filter: url(#orange); }
+      .col3 { -webkit-filter: url(#green);  filter: url(#green); }
+      .col4 { -webkit-filter: url(#pink);   filter: url(#pink); }
+      .col5 { -webkit-filter: url(#purple); filter: url(#purple); }
+      .col6 { -webkit-filter: url(#brown);  filter: url(#brown); }
+      .col7 { -webkit-filter: url(#yellow); filter: url(#yellow); }
+      .col8 { -webkit-filter: url(#red);    filter: url(#red); }
+      .col9 { -webkit-filter: url(#black);  filter: url(#black); }
+    </style>
   </body>
 </html>

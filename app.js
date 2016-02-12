@@ -2,10 +2,14 @@
 
 const d = document
 
+
 const bitcore  = require('bitcore-lib')
 const Mnemonic = require('bitcore-mnemonic')
 
 const ALL_WORDS = Mnemonic.Words.ENGLISH
+
+let WORDS = []
+let FILTERS = []
 
 const get = (url) => {
   return new Promise((resolve, reject) => {
@@ -29,27 +33,36 @@ const loadWords = () => {
   )
 }
 
-const wordTag = (imageUrl, word) => {
+const COLORS = ["blue", "orange", "green", "pink", "purple", "brown", "yellow", "red", "black"]
+
+const wordTag = (imageUrl, word, close) => {
+  if (close)
+    close = "<div class=\"close\">x</div>"
+  else
+    close = ""
+
+  let colIdx = ALL_WORDS.indexOf(word)
   return `<div class="word" data-word="${word}">
-    <img class="img" src="${imageUrl}">
+    <img class="img col${colIdx % 9 + 1}" src="${imageUrl}">
     <h3 class="text">${word}</h3>
+    ${close}
   </div>`
 }
 
-const genImagesHtml = (words) => {
+const genImagesHtml = (words, closeBtn) => {
   let images = ""
   _(words).each((word) => {
     let imageUrl = `/images/english/${word}.jpg`
     images = `
     ${images}
-    ${wordTag(imageUrl, word)}`
+    ${wordTag(imageUrl, word, closeBtn)}`
   })
   return images
 }
 
-const renderWords = (element, words) => {
+const renderWords = (element, words, closeBtn) => {
   // words = _(words).first(500)
-  let imagesHTML = genImagesHtml(words)
+  let imagesHTML = genImagesHtml(words, closeBtn)
   element.innerHTML = imagesHTML
 }
 
@@ -59,9 +72,31 @@ const generateWords = () => {
   return codeStr
 }
 
+const updateCounter = () => {
+  d.querySelector("#counter #count").innerHTML = WORDS.length
+}
+
+const removeCurrentWord = (word) => {
+  WORDS = _(WORDS).without(word)
+  updateCounter()
+}
+
+const onKeyWordClick = (evt) => {
+  let elem = evt.currentTarget.parentElement
+  let word = elem.dataset.word
+  removeCurrentWord(word)
+  showWords(WORDS)
+}
+
 const showWords = (words) => {
   let key = d.querySelector("#key")
-  renderWords(key, words)
+  let closeBtn = true
+  renderWords(key, words, closeBtn)
+  let wordElems = d.querySelectorAll("#key .word .close")
+  _(wordElems).each((word) => {
+    word.removeEventListener("click", onKeyWordClick)
+    word.addEventListener("click",    onKeyWordClick)
+  })
 }
 
 // main
@@ -75,27 +110,56 @@ const showWords = (words) => {
     let words = generateWords()
     KEY = words
     words = words.split(" ")
+    WORDS = words
+    updateCounter()
     showWords(words)
   }
 
   this.save = (x) => {
-    store.privateKeyMnemonic = KEY
+    if (KEY.length > 11)
+      store.privateKeyMnemonic = KEY
   }
 
   this.load = (x) => {
     KEY = store.privateKeyMnemonic
-    let words = KEY.split(" ")
-    showWords(words)
+    WORDS = KEY.split(" ")
+    showWords(WORDS)
   }
 
   this.training = (x) => {
     c.log("TODO")
   }
 
+  this.changeColor = (color) => {
+    let colorIdx = COLORS.indexOf(color)
+    filterWordsByColor(colorIdx)
+  }
+
+  const filterWordsByColor = (colorIdx) => {
+    let words = ALL_WORDS
+
+    words = _(words).select((word, idx) => {
+      return idx % 9 == colorIdx
+    })
+
+    words = applyWordsFilter(words)
+
+    let wordsElem = d.querySelector("#brainwallet-words")
+    renderWords(wordsElem, words)
+  }
+
   const linkClick = (evt) => {
-    let fn = evt.target.dataset.fn.toString()
-    c.log(`executing: ${fn}()`)
-    this[fn]()
+    let data = evt.target.dataset
+    let fn = data.fn.toString()
+    let arg = data.arg
+
+    if (arg) {
+      c.log(`executing: ${fn}(${arg})`)
+      this[fn](arg)
+    } else {
+      c.log(`executing: ${fn}()`)
+      this[fn]()
+    }
   }
 
   const links = d.querySelectorAll("a")
@@ -121,16 +185,23 @@ const showWords = (words) => {
   }
 
   const getPrivateKey = (words) => {
-    let code = new Mnemonic(words.join(" "))
-    return code.toHDPrivateKey()
+    try {
+      let code = new Mnemonic(words.join(" "))
+      return code.toHDPrivateKey()
+    } catch (e) {
+      console.error("Error:", e)
+      d.querySelector("#status").innerHTML = `Error: ${e.message}`
+    }
   }
 
   const showPrivateKey = (words) => {
     let key = getPrivateKey(words)
-    let elem = d.querySelector("#keyWIF")
-    let keyString = key.privateKey.toWIF()
-    let message = `PrivateKey:<br>${keyString}`
-    elem.innerHTML = message
+    if (key) {
+      let elem = d.querySelector("#keyWIF")
+      let keyString = key.privateKey.toWIF()
+      let message = `PrivateKey:<br>${keyString}`
+      elem.innerHTML = message
+    }
   }
 
   // TODO: training
@@ -139,15 +210,17 @@ const showWords = (words) => {
 
   //
 
-  const WORDS = []
 
   const wordAddDo = (word) => {
-    if (WORDS.length < 12)
+    if (WORDS.length < 12) {
+      d.querySelector("#keyWIF").innerHTML = ""
       WORDS.push(word)
+    }
 
     if (WORDS.length > 11)
       showPrivateKey(WORDS)
 
+    updateCounter()
     showWords(WORDS)
   }
 
@@ -168,6 +241,9 @@ const showWords = (words) => {
   window.addEventListener("words-loaded", wordsAddClickListener, false)
 
   const addWordToInput = (word, elem) => {
+    if (CURRENT_WORD)
+      word = CURRENT_WORD
+
     if (_(ALL_WORDS).include(word)) {
       wordAddDo(word)
       elem.value = ""
@@ -183,7 +259,35 @@ const showWords = (words) => {
     }
   }
 
+  let CURRENT_WORD = null
+
+  const applyWordsFilter = (words) => {
+    let input = d.querySelector("#input")
+
+    let regex = new RegExp(`^${input.value}`)
+
+    CURRENT_WORD = null
+
+    words = _(words).select((word) => {
+      return word.match(regex)
+    })
+
+    if (words.length == 1)
+      CURRENT_WORD = words[0]
+
+    return words
+  }
+
+  const wordsFilter = () => {
+    let words = ALL_WORDS
+    words = applyWordsFilter(words)
+
+    let wordsElem = d.querySelector("#brainwallet-words")
+    renderWords(wordsElem, words)
+  }
+
   let input = d.querySelector("#input")
   input.addEventListener("keydown", wordsAddOnEnter)
+  input.addEventListener("keyup", wordsFilter)
 
 }, 0))

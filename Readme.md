@@ -52,6 +52,11 @@ This is a repo that contains just a private key, image based tool, not a keyboar
 
 hmmm.... no :D
 
+### Why
+
+I think that people that can remember a sequence of 12 words easily exist, in fact I know some, also I think that with a little training you can also do it. That's why I created imagewallet.
+
+For increased security you should build the whole project locally and run it offline.
 
 ### LICENSE
 

@@ -18,11 +18,11 @@ h1 > span { font-size: 70%; }
 .word > .text { text-align: center }
 /*.word >*/
 /*.word > .img { width: 100% }*/
-.word > .img { background-size: contain; }
+.word > .img { border-radius: 9px } /*background-size: contain;*/
 /*.word { width: 19%; }*/
 /*.word > .img { height: 120px; width: 100%; }*/
 .word > .img { height: 150px; width: 150px; }
-.word > .text { line-height: 70px; margin: 0 0 20px 0; padding: 0 display:  block}
+.word > .text { line-height: 50px; margin: 0 0 20px 0; padding: 0 display:  block}
 
 /* style: main: colors */
 /* TODO: Webkit filters */
@@ -33,10 +33,19 @@ h1 > span { font-size: 70%; }
 .word:hover .text { color: #000 }
 .word:hover .img { opacity: 0.8 }
 
+
+#key .word:hover .text { color: #555 }
+#key .word:hover .img { opacity: 1 }
+#brainwallet-words .word:hover .img { -webkit-filter: none; filter: none; }
+
+#key .word { position: relative }
+#key .word .close { border: 1px solid #666; cursor: pointer; position: absolute; top: 0; right: 0; color: white; font-weight: bold; background: rgba(90, 90, 90, 0.4); padding: 0 8px 2px; border-radius: 6px }
+#key .word:hover .close { color: white; }
+#key .word .close:hover { color: #333; background: #FFF }
 /*background:  no-repeat center center;*/
 
 /* button */
-.button, .btn, .buttons a { background: #C00; border: 1px solid #C00; color: #FFF; border-radius: 10px; padding: 3px 7px; }
+.button, .btn, .buttons a { cursor: pointer; background: #C00; border: 1px solid #C00; color: #FFF; border-radius: 10px; padding: 3px 7px; }
 .button:hover, .btn:hover, .buttons a:hover {  background: #FFF; color: #C00; }
 
 
@@ -44,4 +53,17 @@ h1 > span { font-size: 70%; }
 input { font-size: 140%; padding: 8px 12px; width: 100%; }
 input { margin-bottom: 20px; }
 
-#keyWIF { font-weight: bold; font-size: 30px; font-size: 48px; margin-bottom: 20px; text-align: center}
+#counter { float: right; font-size: 22px; margin-bottom: 20px; }
+#keyWIF, #status { font-weight: bold;  margin-bottom: 20px; text-align: center }
+#keyWIF { font-size: 48px; }
+#status { font-size: 30px; }
+
+.color-select a       { border: 2px solid #FFF; padding: 5px 10px; }
+.color-select a:hover { border: 2px solid #555; color: white; opacity: 0.8 }
+.color-select a[data-arg=yellow], .color-select a[data-arg=pink] { color: #333 }
+
+.s10 { height: 10px }
+.s20 { height: 20px }
+.s30 { height: 30px }
+.s40 { height: 40px }
+.s50 { height: 50px }
