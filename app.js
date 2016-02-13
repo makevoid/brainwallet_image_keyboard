@@ -264,7 +264,7 @@ const showWords = (words) => {
   const applyWordsFilter = (words) => {
     let input = d.querySelector("#input")
 
-    let regex = new RegExp(`^${input.value}`)
+    let regex = new RegExp(`^${input.value}`, "i")
 
     CURRENT_WORD = null
 
