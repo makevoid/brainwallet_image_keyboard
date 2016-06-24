@@ -69,6 +69,7 @@ const renderWords = (element, words, closeBtn) => {
 const generateWords = () => {
   let code = new Mnemonic(ALL_WORDS);
   let codeStr = code.toString()
+  console.log("mnemonic generated:", codeStr)
   return codeStr
 }
 

@@ -13,6 +13,13 @@ a { color: #E00; }
 h1 { line-height: 90px; margin: 0; }
 h1 > span { font-size: 70%; }
 
+/* spacers */
+.s10 { height: 10px }
+.s20 { height: 20px }
+.s30 { height: 30px }
+.s40 { height: 40px }
+.s50 { height: 50px }
+
 /* style: main: form */
 .word { display: inline-block }
 .word > .text { text-align: center }
@@ -61,9 +68,3 @@ input { margin-bottom: 20px; }
 .color-select a       { border: 2px solid #FFF; padding: 5px 10px; }
 .color-select a:hover { border: 2px solid #555; color: white; opacity: 0.8 }
 .color-select a[data-arg=yellow], .color-select a[data-arg=pink] { color: #333 }
-
-.s10 { height: 10px }
-.s20 { height: 20px }
-.s30 { height: 30px }
-.s40 { height: 40px }
-.s50 { height: 50px }
